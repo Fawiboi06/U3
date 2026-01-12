@@ -109,9 +109,6 @@ public class Controller {
                 setToPerUnitItemMenu();
                 break;
 
-            case MakeCake:
-                addNewCake();
-                break;
 
             case OrderHistory:
                 setToOrderHistoryMenu();
@@ -366,6 +363,7 @@ public class Controller {
         }
         return result;
     }
+}
 
     /**
      * Creates a new cake type and adds it to the cake menu (VG requirement).
@@ -373,111 +371,3 @@ public class Controller {
      *
      * @author Rei
      */
-    public void addNewCake() {
-        // CustomCakeFrame is currently empty TODO in your view,
-        // so we do a simple, course-level solution with JOptionPane.
-
-        String name = JOptionPane.showInputDialog(view, "Enter cake name:");
-        if (name == null || name.trim().isEmpty()) {
-            return;
-        }
-
-        int slices;
-        try {
-            String sliceStr = JOptionPane.showInputDialog(view, "How many slices? (integer)");
-            if (sliceStr == null) {
-                return;
-            }
-            slices = Integer.parseInt(sliceStr);
-            if (slices <= 0) {
-                JOptionPane.showMessageDialog(view, "Slices must be > 0.");
-                return;
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(view, "Invalid number of slices.");
-            return;
-        }
-
-        double basePrice;
-        try {
-            String baseStr = JOptionPane.showInputDialog(view, "Base price for the cake? (number)");
-            if (baseStr == null) {
-                return;
-            }
-            basePrice = Double.parseDouble(baseStr);
-            if (basePrice < 0) {
-                JOptionPane.showMessageDialog(view, "Base price must be >= 0.");
-                return;
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(view, "Invalid base price.");
-            return;
-        }
-
-        // Choose fillings (at least 2)
-        List<Filling> fillings = new ArrayList<>();
-        Filling[] options = Filling.values();
-
-        while (fillings.size() < 2) {
-            Filling chosen = (Filling) JOptionPane.showInputDialog(
-                    view,
-                    "Choose a filling (need at least 2):",
-                    "Fillings",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    options,
-                    options[0]
-            );
-            if (chosen == null) {
-                return;
-            }
-            fillings.add(chosen);
-        }
-
-        // Optional more fillings
-        while (true) {
-            int choice = JOptionPane.showConfirmDialog(
-                    view,
-                    "Add another filling?",
-                    "More fillings",
-                    JOptionPane.YES_NO_OPTION
-            );
-
-            if (choice != JOptionPane.YES_OPTION) {
-                break;
-            }
-
-            Filling chosen = (Filling) JOptionPane.showInputDialog(
-                    view,
-                    "Choose another filling:",
-                    "Fillings",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    options,
-                    options[0]
-            );
-
-            if (chosen == null) {
-                break;
-            }
-            fillings.add(chosen);
-        }
-
-        Cake newCake = new Cake(name.trim(), slices, basePrice, fillings);
-
-        // add to cake array (expand by 1)
-        Cake[] newArr = new Cake[cakes.length + 1];
-        for (int i = 0; i < cakes.length; i++) {
-            newArr[i] = cakes[i];
-        }
-        newArr[cakes.length] = newCake;
-        cakes = newArr;
-
-        // Refresh cake menu if user is currently looking at it
-        if (currentLeftMenu == ButtonType.Cake) {
-            view.populateLeftPanel(createCakeMenuStrings());
-        }
-
-        JOptionPane.showMessageDialog(view, "New cake added to menu:\n" + newCake.toString());
-    }
-}
