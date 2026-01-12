@@ -1,6 +1,8 @@
 package controller;
 
 //only imports what is strictly necessary from view-package
+import Model.Cake;
+import Model.Filling;
 import view.CustomCakeFrame;
 import view.MainFrame;
 import view.ButtonType;
@@ -22,8 +24,9 @@ public class Controller {
     public Controller() {
         view = new MainFrame(1000, 500, this);
         loadStringTestValues(); //for test purposes - remove when not needed more
-
-        setToCakeMenu();
+        view.enableAllButtons();
+        view.disableAddMenuButton();
+        view.disableViewSelectedOrderButton();
     }
 
     private void loadStringTestValues() {
@@ -34,19 +37,42 @@ public class Controller {
 
         currentOrderArray = new String[1];
 
-        cakes = new Cake[3];
-        cakes[0] = new Cake("Prinsesstårta", 8, new Filling[]{Filling.VANILJKRAM, Filling.GRADDE, Filling.HALLONSYLT});
-        cakes[1] = new Cake("Chokladtårta", 12, new Filling[]{Filling.CHOKLADMOUSSE, Filling.CHOKLADGANACHE, Filling.GRADDE});
-        cakes[2] = new Cake("Citronmaräng", 6, new Filling[]{Filling.CITRONKRAM, Filling.MARANG});
+        cakes = new Cake[3] ;
+        cakes[0] = new Cake("Prinsesstårta", 8, new Filling[]{Filling.VANILLA, Filling.RASPBERRY, Filling.BLUEBERRY});
+        cakes[1] = new Cake("Chokladtårta", 12, new Filling[]{Filling.CHOCOLATE, Filling.OREO});
+        cakes[2] = new Cake("Frukttårta", 6, new Filling[]{Filling.RASPBERRY, Filling.VANILLA, Filling.BLUEBERRY});
     }
 
-        public void buttonPressed(ButtonType button){
+    public void buttonPressed(ButtonType button){
 
         switch (button) {
+            case Add:
+                addItemToOrder(view.getSelectionLeftPanel());
+                break;
+
             case Cake:
+
                 setToCakeMenu();
                 break;
-            default:
+
+            case PerUnitItem:
+                setToPerUnitItemMenu();
+                break;
+
+            case MakeCake:
+                addNewCake();
+                break;
+
+            case OrderHistory:
+                setToOrderHistoryMenu();
+                break;
+
+            case Order:
+                placeOrder();
+                break;
+
+            case ViewOrder:
+                viewSelectedOrder(view.getSelectionLeftPanel());
                 break;
         }
     }
